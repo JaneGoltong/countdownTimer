@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Countdown Timer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-indigo-500 to-purple-600 min-h-screen flex items-center justify-center text-white font-sans">
+  <div class="bg-white bg-opacity-10 p-8 rounded-2xl shadow-xl text-center backdrop-blur-lg w-full max-w-xl">
+    <h1 class="text-3xl font-bold mb-6">⏳ Countdown Timer</h1>
+
+    <div class="flex flex-wrap items-end justify-center gap-4 mb-6">
+      <div>
+        <label for="days" class="block text-sm font-medium mb-1">Days</label>
+        <input type="number" id="days" min="0" class="text-black w-20 px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-300" />
+      </div>
+      <div>
+        <label for="hours" class="block text-sm font-medium mb-1">Hours</label>
+        <input type="number" id="hours" min="0" max="23" class="text-black w-20 px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-300" />
+      </div>
+      <div>
+        <label for="minutes" class="block text-sm font-medium mb-1">Minutes</label>
+        <input type="number" id="minutes" min="0" max="59" class="text-black w-20 px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-300" />
+      </div>
+      <div>
+        <label for="seconds" class="block text-sm font-medium mb-1">Seconds</label>
+        <input type="number" id="seconds" min="0" max="59" class="text-black w-20 px-3 py-2 rounded-lg focus:ring-2 focus:ring-purple-300" />
+      </div>
+    </div>
+
+    <div class="flex justify-center gap-4 mb-4">
+      <button onclick="startCountdown()" id="startBtn" class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg font-semibold">
+        Start
+      </button>
+      <button onclick="stopCountdown()" id="stopBtn" class="bg-yellow-500 hover:bg-yellow-600 px-6 py-2 rounded-lg font-semibold">
+        Stop
+      </button>
+      <button onclick="resetCountdown()" id="resetBtn" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-lg font-semibold">
+        Reset
+      </button>
+    </div>
+
+    <div id="countdown" class="mt-4 text-2xl font-semibold tracking-wide">Waiting...</div>
+  </div>
+
+  <script>
+    let interval;
+    let totalSeconds = 0;
+    let paused = false;
+
+    function startCountdown() {
+      if (!paused) {
+        const d = parseInt(document.getElementById('days').value) || 0;
+        const h = parseInt(document.getElementById('hours').value) || 0;
+        const m = parseInt(document.getElementById('minutes').value) || 0;
+        const s = parseInt(document.getElementById('seconds').value) || 0;
+        totalSeconds = d * 86400 + h * 3600 + m * 60 + s;
+      }
+
+      if (totalSeconds <= 0) {
+        alert("Please enter a valid duration.");
+        return;
+      }
+
+      clearInterval(interval);
+      paused = false;
+
+      interval = setInterval(() => {
+        if (totalSeconds <= 0) {
+          clearInterval(interval);
+          document.getElementById('countdown').innerText = "🎉 Time's up!";
+          return;
+        }
+
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        document.getElementById('countdown').innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        totalSeconds--;
+      }, 1000);
+    }
+
+    function stopCountdown() {
+      clearInterval(interval);
+      paused = true;
+    }
+
+    function resetCountdown() {
+      clearInterval(interval);
+      paused = false;
+      totalSeconds = 0;
+      document.getElementById('days').value = '';
+      document.getElementById('hours').value = '';
+      document.getElementById('minutes').value = '';
+      document.getElementById('seconds').value = '';
+      document.getElementById('countdown').innerText = 'Waiting...';
+    }
+  </script>
+</body>
+</html>
